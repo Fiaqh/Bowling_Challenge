@@ -34,16 +34,19 @@ This enables the following:
 	-Frames do not need to worry about other frames using this logic  
 	-The Score of a Player can be computed simply by knowing what balls were rolled by the Player  
 		-The logic behind computing the score can be abstracted to be independent of the number of frames and pins on a frame.  
-	-We push the responsibility of computing the score to the Score class so the Player class is not responsible for too much work
+	-We push the responsibility of computing the score to the Score class so the Player class is not responsible for too much work.
+ 	-I did some unit tests, but there are many more that should be done (Since the rules have some edge cases these should all have tests, but due to time restraints I decided against using too much time here). If time had permitted it I would like to have done testdriven development...
+  	
 Minor design note:  
 	-We make a GameOptions class to define any static elements of the problems, such as the number of frames in a game, and the number of pins on a frame, in base rules of bowling were to change.  
-	-We abuse a small quirk in the rules, noting that the point system does not destinguish between a strike or a spare on the second to last throw (other than the amount of pins the shot itself knocks)  
-		this makes handling the 10th frame case a bit easier, but is ultimately a quirk/weakpoint.  
+	-We abuse a small quirk in the rules, noting that the point system does not destinguish between a strike or a spare on the second to last throw (other than the amount of pins the shot itself knocks) this makes handling the last frame case a bit easier, since the logic for the Ball class doesnt have to differentiate between the last frame and others using this quirk.
+		 
 
 Some notes on the GUI:  
   -This was done very last minute  
   -This was my second time making a GUI using windowsForms, so the resulting code is quite messy  
-  -Is not a representation for "Good code" in a Front-end related setting.  
+  -Is not a representation for "Good code" in a Front-end related setting.
+  -Is not unit tested since I dont know how...
 	
 	
 	
