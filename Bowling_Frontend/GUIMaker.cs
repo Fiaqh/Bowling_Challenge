@@ -23,60 +23,8 @@ namespace Bowling_Frontend
             this.player = player;
             this.panel = panel;
         }
-        public void AddFrameToPanel(int xPos, int yPos, Panel panel, string firstShot, string secondShot, int frameNumber)
-        {
-            Label mainLabel = new Label();
-            Label header = new Label();
-            Label pointsInFrame = new Label();
 
-            mainLabel.BorderStyle = BorderStyle.FixedSingle;
-            header.BorderStyle = BorderStyle.FixedSingle;
-            pointsInFrame.BorderStyle = BorderStyle.FixedSingle;
-            //Make labels transparent so they can overlap
-            mainLabel.BackColor = Color.Transparent;
-            pointsInFrame.BackColor = Color.Transparent;
-
-            //Sets the size of the labels
-            int mainLabelSizeX = frameLabelSizeX;
-            int mainLabelSizeY = frameLabelSizeY;        
-
-            int headerSizeX = mainLabelSizeX;
-            int headerSizeY = mainLabelSizeX / 5;
-            int pointsInFrameSizeX = mainLabelSizeX;
-            int pointsInFrameSizeY = mainLabelSizeX / 5;
-
-            //Adjust the label positions and places the secondShotLabel in the top right corner of the firstShotLabel
-            mainLabel.Size = new Size(mainLabelSizeX, mainLabelSizeY);
-            header.Size = new Size(headerSizeX, headerSizeY);
-            pointsInFrame.Size = header.Size;
-
-
-            //Set the location of the labels
-            mainLabel.Location = new Point(xPos, yPos + headerSizeY);
-            header.Location = new Point(xPos, yPos);
-            pointsInFrame.Location = new Point(xPos, yPos + headerSizeY + mainLabelSizeY);
-
-            //Sets the text for the labels and the header
-            mainLabel.Text =  (secondShot != "") ? firstShot + " + " + secondShot : firstShot;
-            header.Text = (frameNumber+1).ToString();
-
-            int scoreSoFar = 0;
-
-            for(int i = 0; i<=frameNumber;i++)
-            {
-                scoreSoFar += player.score.GetScoreInFrame(i);
-            }
-
-            pointsInFrame.Text =  (player.currentFrameNumber > frameNumber) ? "Score: " + scoreSoFar : "Score:";
-
-            //Adds the labels to the panel
-            panel.Controls.Add(mainLabel);
-            panel.Controls.Add(header);
-            panel.Controls.Add(pointsInFrame);
-
-        }
-
-        public void AddLastFrameToPanel(int xPos, int yPos, Panel panel, string firstShot, string secondShot, string thirdShot)
+        public void AddFrameToPanel(int xPos, int yPos, Panel panel, string firstShot, string secondShot, string thirdShot, int frameNumber)
         {
             Label firstShotLabel = new Label();
             Label header = new Label();
@@ -94,8 +42,8 @@ namespace Bowling_Frontend
 
 
             //Sets the size of the labels
-            int firstShotLabelSizeX = 100;
-            int firstShotLabelSizeY = 60;
+            int firstShotLabelSizeX = frameLabelSizeX;
+            int firstShotLabelSizeY = frameLabelSizeY;
             int headerSizeX = firstShotLabelSizeX;
             int headerSizeY = firstShotLabelSizeX / 5;
             int pointsInFrameSizeX = firstShotLabelSizeX;
@@ -107,8 +55,6 @@ namespace Bowling_Frontend
 
             header.Size = new Size(headerSizeX, headerSizeY);
             header.Location = new Point(xPos, yPos);
-            
-
             pointsInFrame.Size = header.Size;
             pointsInFrame.Location = new Point(xPos, yPos + headerSizeY + firstShotLabelSizeY);
 
@@ -116,16 +62,16 @@ namespace Bowling_Frontend
             firstShotLabel.Text = firstShot.ToString();
             firstShotLabel.Text += (secondShot != "") ? " + " + secondShot : "";
             firstShotLabel.Text += (thirdShot != "") ? " + " + thirdShot : "";
-            header.Text = GameOptions.numberOfFrames.ToString();
+            header.Text = frameNumber.ToString();
 
+            //Computes the players current score
             int scoreSoFar = 0;
-
-            for (int i = 0; i <= GameOptions.numberOfFrames; i++)
+            for (int i = 0; i <= frameNumber; i++)
             {
                 scoreSoFar += player.score.GetScoreInFrame(i);
             }
 
-            pointsInFrame.Text = (player.currentFrameNumber  == GameOptions.numberOfFrames) ? "Score: " + scoreSoFar : "Score:";
+            pointsInFrame.Text = (player.currentFrameNumber  > frameNumber) ? "Score: " + scoreSoFar : "Score:";
 
             //Adds the labels to the panel
             panel.Controls.Add(firstShotLabel);
@@ -139,51 +85,33 @@ namespace Bowling_Frontend
         public void SetupGame()
         {
             panel.Controls.Clear();
-
-            
-
             int buttonLocationY = 10;
             int StartFrameLocationX = 10;
             int frameLocationY = buttonSizeY+10;
 
             //Adds all frames to panel except the last frame
-            for(int frameNumber = 0; frameNumber<GameOptions.numberOfFrames-1; frameNumber++)
+            for(int frameNumber = 0; frameNumber<GameOptions.numberOfFrames; frameNumber++)
             {
                 List<Ball> rolledBallsInFrame = player.GetRolledBallsInFrame(frameNumber);
                 switch (rolledBallsInFrame.Count)
                 {
                     case 0:
-                        AddFrameToPanel(StartFrameLocationX + frameNumber * frameLabelSizeX, frameLocationY, panel, "", "", frameNumber);
+                        AddFrameToPanel(StartFrameLocationX + frameNumber * frameLabelSizeX, frameLocationY, panel, "", "","", frameNumber);
                         break;
                     case 1:
-                        AddFrameToPanel(StartFrameLocationX + frameNumber * frameLabelSizeX, frameLocationY, panel, rolledBallsInFrame[0].knockedPins.ToString(), "", frameNumber);
+                        AddFrameToPanel(StartFrameLocationX + frameNumber * frameLabelSizeX, frameLocationY, panel, rolledBallsInFrame[0].knockedPins.ToString(), "","", frameNumber);
                         break;
                     case 2:
-                        AddFrameToPanel(StartFrameLocationX + frameNumber * frameLabelSizeX, frameLocationY, panel, rolledBallsInFrame[0].knockedPins.ToString(), rolledBallsInFrame[1].knockedPins.ToString(), frameNumber);
+                        AddFrameToPanel(StartFrameLocationX + frameNumber * frameLabelSizeX, frameLocationY, panel, rolledBallsInFrame[0].knockedPins.ToString(), rolledBallsInFrame[1].knockedPins.ToString(),"", frameNumber);
+                        break;
+                    case 3:
+                        AddFrameToPanel(StartFrameLocationX + (GameOptions.numberOfFrames - 1) * frameLabelSizeX, frameLocationY, panel, rolledBallsInFrame[0].knockedPins.ToString(), rolledBallsInFrame[1].knockedPins.ToString(), rolledBallsInFrame[2].knockedPins.ToString(),frameNumber);
                         break;
                     default:
                         break;
                 }
             }
-            //Adds the last frame
-            List<Ball> rolledBallsInLastFrame = player.GetRolledBallsInFrame(GameOptions.numberOfFrames-1);
-            switch(rolledBallsInLastFrame.Count) 
-            {
-                case 0:
-                    AddLastFrameToPanel(StartFrameLocationX + (GameOptions.numberOfFrames - 1) * frameLabelSizeX, frameLocationY, panel, "", "", "");
-                    break;
-                case 1:
-                    AddLastFrameToPanel(StartFrameLocationX + (GameOptions.numberOfFrames - 1) * frameLabelSizeX, frameLocationY, panel, rolledBallsInLastFrame[0].knockedPins.ToString(), "", "");
-                    break;
-                case 2:
-                    AddLastFrameToPanel(StartFrameLocationX + (GameOptions.numberOfFrames - 1) * frameLabelSizeX, frameLocationY, panel, rolledBallsInLastFrame[0].knockedPins.ToString(), rolledBallsInLastFrame[1].knockedPins.ToString(), "");
-                    break; 
-                case 3:
-                    AddLastFrameToPanel(StartFrameLocationX + (GameOptions.numberOfFrames - 1) * frameLabelSizeX, frameLocationY, panel, rolledBallsInLastFrame[0].knockedPins.ToString(), rolledBallsInLastFrame[1].knockedPins.ToString(), rolledBallsInLastFrame[2].knockedPins.ToString());
-                    break;
-                default:
-                    break;
-            }
+            //Adds buttons for the user to enter desired outcome of RollBall
             if(player.currentFrameNumber < GameOptions.numberOfFrames) MakeRollBallButtons(startLocationX, startLocationY, panel, player.frames[player.currentFrameNumber].pinsLeft + 1);
 
             //Make a reset button
@@ -217,7 +145,7 @@ namespace Bowling_Frontend
         }
 
 
-        //Handles the button click 
+        //Handles the RollBall button click 
         public void RollBallButtonClick(object sender, EventArgs e)
         {
             Button clickedButton = sender as Button;

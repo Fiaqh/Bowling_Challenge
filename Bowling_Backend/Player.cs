@@ -27,7 +27,7 @@ namespace Bowling_Backend
             }
         }
 
-        public void UpdateScore()
+        private void UpdateScore()
         {
             score.rolls = rolledBalls;
             score.UpdateTotalScore();
@@ -35,7 +35,7 @@ namespace Bowling_Backend
 
         //We update the currentFrameNumber by looking at the last ball that was thrown by the Player. Depending on the result of the ball and the frame it
         //was thrown at we update the currentFrameNumber accordingly
-        public void updateCurrentFrameNumber()
+        private void updateCurrentFrameNumber()
         {
             if (rolledBalls.Count == 0) currentFrameNumber = 0;
 
@@ -48,29 +48,11 @@ namespace Bowling_Backend
                         break;
 
                     case 1:
-                        //If we have only thrown once on a frame we check if we have hit a strike or not. If we did hit a strike and are not on the final frame currentFrame is the next frame.
-                        //If we have not hit a strike we still have a roll left in the frame so this is the currentFrame
-                        if (rolledBalls[rolledBalls.Count - 1].isStrike)
-                        {
-                            if (rolledBalls[rolledBalls.Count - 1].frame.frameNumber == GameOptions.numberOfFrames - 1) currentFrameNumber = rolledBalls[rolledBalls.Count - 1].frame.frameNumber;
-                            else currentFrameNumber = rolledBalls[rolledBalls.Count - 1].frame.frameNumber + 1;
-                        }
-                        else currentFrameNumber = rolledBalls[rolledBalls.Count - 1].frame.frameNumber;
+                        currentFrameNumber = GetCurrentFrameIfOneThrowInFrame();
                         break;
 
                     case 2:
-                        //If we have thrown 2 balls on a frame without hitting a spare or a strike we progress to the next frame
-                        if (!rolledBalls[rolledBalls.Count - 1].isSpare && !rolledBalls[rolledBalls.Count - 1].isStrike)
-                        {
-                            if (rolledBalls[rolledBalls.Count-2].isStrike) currentFrameNumber = rolledBalls[rolledBalls.Count-1].frame.frameNumber;
-                            else currentFrameNumber = rolledBalls[rolledBalls.Count - 1].frame.frameNumber + 1;
-                        }
-                        //If we have thrown 2 balls and either is strike or spare we check if we are on the final frame
-                        else 
-                        {
-                            if (rolledBalls[rolledBalls.Count - 1].frame.frameNumber == GameOptions.numberOfFrames - 1) currentFrameNumber = rolledBalls[rolledBalls.Count - 1].frame.frameNumber;
-                            else currentFrameNumber = rolledBalls[rolledBalls.Count - 1].frame.frameNumber + 1;
-                        }
+                        currentFrameNumber = GetCurrentFrameIfTwoThrowsInFrame();
                         break;
                     //If we have ever thrown 3 times in a frame the frame is over.
                     case 3:
@@ -79,6 +61,37 @@ namespace Bowling_Backend
                     default:
                         break;
                 }
+            }
+        }
+
+        private int GetCurrentFrameIfOneThrowInFrame()
+        {
+            //If we have only thrown once on a frame we check if we have hit a strike or not. If we did hit a strike and are not on the final frame currentFrame is the next frame.
+            //If we have not hit a strike we still have a roll left in the frame so this is the currentFrame
+            Ball lastBall = rolledBalls.Last();
+            if (lastBall.isStrike)
+            {
+                if (lastBall.frame.frameNumber == GameOptions.numberOfFrames - 1) return lastBall.frame.frameNumber;
+                else return lastBall.frame.frameNumber + 1;
+            }
+            else return lastBall.frame.frameNumber;
+        }
+
+        private int GetCurrentFrameIfTwoThrowsInFrame()
+        {
+            Ball lastBall = rolledBalls.Last();
+            Ball secondLastBall = rolledBalls[rolledBalls.Count - 2];
+            //If we have thrown 2 balls on a frame without hitting a spare or a strike we progress to the next frame
+            if (!lastBall.isSpare && !lastBall.isStrike)
+            {
+                if (secondLastBall.isStrike) return lastBall.frame.frameNumber;
+                else return lastBall.frame.frameNumber + 1;
+            }
+            //If we have thrown 2 balls and either is strike or spare we check if we are on the final frame
+            else
+            {
+                if (lastBall.frame.frameNumber == GameOptions.numberOfFrames - 1) return lastBall.frame.frameNumber;
+                else return lastBall.frame.frameNumber + 1;
             }
         }
 
