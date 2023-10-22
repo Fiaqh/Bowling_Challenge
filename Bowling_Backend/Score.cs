@@ -9,7 +9,7 @@ namespace Bowling_Backend
     public class Score
     {
         public int totalScore { get; set; } = 0;
-        List<Ball> rolls;
+        public List<Ball> rolls { get; set; }
         public int[] scoreOnFrames;
         public Score(List<Ball> roll) 
         {
@@ -19,41 +19,6 @@ namespace Bowling_Backend
 
         public void UpdateTotalScore()
         {
-            /*
-            totalScore = 0;
-            if(rolls.Count != 0)
-            {
-                for (int i = 0; i < rolls.Count; i++)
-                {
-                    //If we roll a spare we check if there has been a suceeding roll, if so we also add the result from that roll to the totalScore
-                    //If there has been no suceeding roll we just add that pins we knocked to the score
-                    if (rolls[i].isSpare)
-                    {
-                        if (CheckForSuceedingRoll(i))
-                        {
-                            totalScore += rolls[i].knockedPins + rolls[i + 1].knockedPins;
-                        }
-                        else totalScore += rolls[i].knockedPins;
-                    }
-                    //Same as the with the spare, but we instead check if there has been 1,2 or no suceeding shots. 
-                    else if (rolls[i].isStrike)
-                    {
-                        if (CheckForTwoSuceedingRolls(i))
-                        {
-                            totalScore += rolls[i].knockedPins + rolls[i + 1].knockedPins + rolls[i + 2].knockedPins;
-                        }
-                        else if (CheckForSuceedingRoll(i))
-                        {
-                            totalScore += rolls[i].knockedPins + rolls[i + 1].knockedPins;
-                        }
-                        else totalScore += rolls[i].knockedPins;
-                    }
-                    //If we didnt roll a strike or a spare we just add the amount of knockedPins to the total score.
-                    else totalScore += rolls[i].knockedPins;
-                }
-            }
-            */
-
             totalScore = 0;
             UpdateScoreOnFrames();
             for(int i = 0; i<scoreOnFrames.Length;i++)

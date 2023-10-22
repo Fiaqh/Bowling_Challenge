@@ -29,7 +29,7 @@ namespace Bowling_Backend
 
         public void UpdateScore()
         {
-            score = new Score(rolledBalls);
+            score.rolls = rolledBalls;
             score.UpdateTotalScore();
         }
 
@@ -60,7 +60,11 @@ namespace Bowling_Backend
 
                     case 2:
                         //If we have thrown 2 balls on a frame without hitting a spare or a strike we progress to the next frame
-                        if (!rolledBalls[rolledBalls.Count - 1].isSpare && !rolledBalls[rolledBalls.Count - 1].isStrike) currentFrameNumber = rolledBalls[rolledBalls.Count - 1].frame.frameNumber + 1;
+                        if (!rolledBalls[rolledBalls.Count - 1].isSpare && !rolledBalls[rolledBalls.Count - 1].isStrike)
+                        {
+                            if (rolledBalls[rolledBalls.Count-2].isStrike) currentFrameNumber = rolledBalls[rolledBalls.Count-1].frame.frameNumber;
+                            else currentFrameNumber = rolledBalls[rolledBalls.Count - 1].frame.frameNumber + 1;
+                        }
                         //If we have thrown 2 balls and either is strike or spare we check if we are on the final frame
                         else 
                         {
