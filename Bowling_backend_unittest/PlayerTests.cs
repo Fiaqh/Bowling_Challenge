@@ -13,7 +13,6 @@ namespace Bowling_backend_unittest
         {
             Player player = new Player("test");
             player.RollBall(GameOptions.numberOfPins);
-            player.updateCurrentFrameNumber();
             Assert.True(player.currentFrameNumber == 1);
         }
         [Fact]
