@@ -34,7 +34,7 @@ This enables the following:
 	-Frames do not need to worry about other frames using this logic  
 	-The Score of a Player can be computed simply by knowing what balls were rolled by the Player  
 		-The logic behind computing the score can be abstracted to be independent of the number of frames and pins on a frame.  
-	-We push the responsibility of computing the score up, by assigning it its own class (Lowers coupling)  
+	-We push the responsibility of computing the score to the Score class so the Player class is not responsible for too much work
 Minor design note:  
 	-We make a GameOptions class to define any static elements of the problems, such as the number of frames in a game, and the number of pins on a frame, in base rules of bowling were to change.  
 	-We abuse a small quirk in the rules, noting that the point system does not destinguish between a strike or a spare on the second to last throw (other than the amount of pins the shot itself knocks)  
