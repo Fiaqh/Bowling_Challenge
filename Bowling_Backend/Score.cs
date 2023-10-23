@@ -61,10 +61,12 @@ namespace Bowling_Backend
             //If the previous roll is still on the last frame and was a spare or a strike, then this roll should add no points in itself.
             //If we hit a strike on the first shot in the last frame, then the next two shots shouldn't count points themselves.
             //If we didnt hit a strike on the first shot but hit a spare on the second, then this should count as normal spare
+
             if (rolls[throwIndex - 1].frame.frameNumber == GameOptions.numberOfFrames - 1)
             {
                 if (rolls[throwIndex - 1].isSpare || rolls[throwIndex - 1].isStrike) return 0;
                 else if (rolls[throwIndex - 2].isStrike && rolls[throwIndex - 2].frame.frameNumber == GameOptions.numberOfFrames - 1) return 0;
+                //If we rolled a spare we score normally
                 else if (rolls[throwIndex].isSpare)
                 {
                     return ScoreSpareOnRoll(throwIndex);
@@ -76,7 +78,7 @@ namespace Bowling_Backend
                 }
                 else return 0;
             }
-            //If we havent thrown any balls yet we on the last frame we are either a strike or a spare 
+            //If we havent thrown any balls yet on the last frame we are either a strike or a normal shot and we score accordingly 
             else if (rolls[throwIndex].isStrike)
             {
                 return ScoreStrikeOnRoll(throwIndex);
