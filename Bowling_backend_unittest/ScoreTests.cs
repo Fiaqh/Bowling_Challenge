@@ -62,5 +62,31 @@ namespace Bowling_backend_unittest
 
             Assert.True(score.scoreOnFrames[GameOptions.numberOfFrames - 1] == 3*GameOptions.numberOfPins);
         }
+
+        [Fact]
+        public void CodeTestExample()
+        {
+            Player player = new Player("test");
+            player.RollBall(1);
+            player.RollBall(4);
+            player.RollBall(4);
+            player.RollBall(5);
+            player.RollBall(6);
+            player.RollBall(4);
+            player.RollBall(5);
+            player.RollBall(5);
+            player.RollBall(10);
+            player.RollBall(0);
+            player.RollBall(1);
+            player.RollBall(7);
+            player.RollBall(3);
+            player.RollBall(6);
+            player.RollBall(4);
+            player.RollBall(10);
+            player.RollBall(2);
+            player.RollBall(8);
+            player.RollBall(6);
+            Assert.Equal(133, player.score.totalScore);
+        }
     }
 }

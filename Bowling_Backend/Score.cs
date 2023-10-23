@@ -49,32 +49,41 @@ namespace Bowling_Backend
                         //If we didnt roll a strike or a spare we just add the amount of knockedPins to the total score.
                         else scoreOnFrames[rolls[i].frame.frameNumber] += rolls[i].knockedPins;
                     }
-
-                    //Handles the points if we score a strike or spare in the last frame. There is some potential danger here if GameOptions.NumberOfFrames is set to 1
-                    else if (rolls[i].frame.frameNumber == GameOptions.numberOfFrames - 1)
-                    {
-                        //If the previous roll is still on the last frame and was a spare or a strike, then this roll should add no points in itself.
-                        //If we hit a strike on the first shot in the last frame, then the last shot in the frame also shouldnt count. 
-                        if (rolls[i - 1].frame.frameNumber == GameOptions.numberOfFrames - 1 || rolls[i - 2].frame.frameNumber == GameOptions.numberOfFrames - 1)
-                        {
-                            if (rolls[i - 1].isSpare || rolls[i - 1].isStrike || rolls[i - 2].isStrike) scoreOnFrames[rolls[i].frame.frameNumber] += 0;
-                        }
-                        //If we are not in the first condition then we score as normally
-                        else if (rolls[i].isSpare)
-                        {
-                            scoreOnFrames[rolls[i].frame.frameNumber] += ScoreSpareOnRoll(i);
-                        }
-                        
-                        else if (rolls[i].isStrike)
-                        {
-                            scoreOnFrames[rolls[i].frame.frameNumber] += ScoreStrikeOnRoll(i);
-                        }
-
-                        else scoreOnFrames[rolls[i].frame.frameNumber] += rolls[i].knockedPins;
-                    }
+                    //Handles the points for the last frame. There is some potential danger here if GameOptions.NumberOfFrames is set to 1
+                    else scoreOnFrames[rolls[i].frame.frameNumber] += ScoreLastFrame(i);
                 }
             }
         }
+
+        private int ScoreLastFrame(int throwIndex)
+        {
+            //We first check if the previous roll was in the last frame
+            //If the previous roll is still on the last frame and was a spare or a strike, then this roll should add no points in itself.
+            //If we hit a strike on the first shot in the last frame, then the next two shots shouldn't count points themselves.
+            //If we didnt hit a strike on the first shot but hit a spare on the second, then this should count as normal spare
+            if (rolls[throwIndex - 1].frame.frameNumber == GameOptions.numberOfFrames - 1)
+            {
+                if (rolls[throwIndex - 1].isSpare || rolls[throwIndex - 1].isStrike) return 0;
+                else if (rolls[throwIndex - 2].isStrike && rolls[throwIndex - 2].frame.frameNumber == GameOptions.numberOfFrames - 1) return 0;
+                else if (rolls[throwIndex].isSpare)
+                {
+                    return ScoreSpareOnRoll(throwIndex);
+                }
+                //If we are on the second throw in the last frame and dont hit a strike we add the points as normal.
+                else if (rolls[throwIndex - 2].frame.frameNumber != GameOptions.numberOfFrames - 1)
+                {
+                    return rolls[throwIndex].knockedPins;
+                }
+                else return 0;
+            }
+            //If we havent thrown any balls yet we on the last frame we are either a strike or a spare 
+            else if (rolls[throwIndex].isStrike)
+            {
+                return ScoreStrikeOnRoll(throwIndex);
+            }
+            else return rolls[throwIndex].knockedPins;
+        }
+
 
         //Gets the score in a frame specified by its frameNumber
         public int GetScoreInFrame(int frameNumber)
